@@ -80,6 +80,16 @@ TEMPLATES.each do |filepath|
   end
 end
 
+src = Rake::FileList.new('{src,include}/**/*.{c,h}')
+targets = src.pathmap("ext/yarp/%p")
+
+rule %r{^ext/yarp/(src|include)/.+\.[ch]$} => '%{ext/yarp/,}X%x' do |t|
+  mkdir_p t.name.pathmap("%d")
+  cp t.source, t.name
+end
+
+task :aaron => targets
+
 RDoc::Task.new do |rdoc|
   rdoc.main = "README.md"
   rdoc.markup = "markdown"
